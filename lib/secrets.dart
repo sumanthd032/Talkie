@@ -1,2 +1,0 @@
-const gemini = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyDjzdm57e2HvjeBh7g3JNbxFlvEHo9Z-Z0";
-const hugFace = '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';
