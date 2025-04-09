@@ -2,7 +2,10 @@
 
 "Talkie" is a Flutter application that provides an interactive, voice-driven AI experience. It leverages the power of AI to generate text based on your voice commands, with a unique feature that allows you to customize the AI's persona.
 
-You can download our android app in releases
+## Live Demo & Releases
+
+- 🌐 **Live Website**: [talkie](https://talkie-bot.netlify.app/)  
+- 📦 **Latest Release**: [GitHub Releases](https://github.com/sumanthd032/Talkie/releases/tag/v1.0.0)
 
 ## Features
 
