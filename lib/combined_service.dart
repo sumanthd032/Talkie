@@ -8,9 +8,7 @@ class CombinedService {
   final FlutterTts flutterTts = FlutterTts();
 
   CombinedService() {
-    flutterTts.setCompletionHandler(() {
-      // Handle completion if needed
-    });
+    flutterTts.setCompletionHandler(() {});
   }
 
   Future<String> generateTextGemini(String prompt, String character) async {
@@ -22,13 +20,16 @@ class CombinedService {
 
     try {
       final response = await http.post(
-        Uri.parse(gemini), // Using the gemini variable from secrets.dart
+        Uri.parse(gemini),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'contents': [
             {
               'parts': [
-                {'text': '$systemPrompt\n${messages.map((message) => "${message['role']}: ${message['content']}").join('\n')}'}
+                {
+                  'text':
+                      '$systemPrompt\n${messages.map((m) => "${m['role']}: ${m['content']}").join('\n')}'
+                }
               ]
             }
           ]
@@ -36,11 +37,8 @@ class CombinedService {
       );
 
       if (response.statusCode == 200) {
-        final decodedResponse = json.decode(response.body);
-        String aiResponse = decodedResponse['candidates'][0]['content']['parts'][0]['text'];
-
-      
-
+        final decoded = json.decode(response.body);
+        final aiResponse = decoded['candidates'][0]['content']['parts'][0]['text'];
         messages.add({'role': 'assistant', 'content': aiResponse});
         return aiResponse;
       } else {
@@ -51,11 +49,9 @@ class CombinedService {
     }
   }
 
- 
   Future<String> generateImageHuggingFace(String prompt) async {
     messages.add({'role': 'user', 'content': prompt});
-
-    final String huggingFaceApiKey = hugFace; // Using the hugFace variable from secrets.dart
+    final String huggingFaceApiKey = hugFace;
     final String huggingFaceModel = 'stabilityai/stable-diffusion-2-1';
 
     try {
@@ -69,20 +65,14 @@ class CombinedService {
       );
 
       if (response.statusCode == 200) {
-        final decodedResponse = json.decode(response.body);
+        final decoded = json.decode(response.body);
 
-        if (decodedResponse is List && decodedResponse.isNotEmpty) {
-          if (decodedResponse[0] is String) {
-            String imageData = decodedResponse[0];
-            String imageUrl = 'data:image/png;base64,$imageData';
-
-            messages.add({'role': 'assistant', 'content': imageUrl});
-            return imageUrl;
-          } else {
-            return "Image data format error.";
-          }
+        if (decoded is List && decoded.isNotEmpty && decoded[0] is String) {
+          final imageUrl = 'data:image/png;base64,${decoded[0]}';
+          messages.add({'role': 'assistant', 'content': imageUrl});
+          return imageUrl;
         } else {
-          return "Image response structure error.";
+          return "Image data format error.";
         }
       } else {
         return 'Hugging Face API Error: ${response.statusCode}, ${response.body}';
@@ -95,7 +85,7 @@ class CombinedService {
   Future<String> isImagePrompt(String prompt) async {
     try {
       final response = await http.post(
-        Uri.parse(gemini), // Using the gemini variable from secrets.dart
+        Uri.parse(gemini),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'contents': [
@@ -109,14 +99,12 @@ class CombinedService {
       );
 
       if (response.statusCode == 200) {
-        final decodedResponse = json.decode(response.body);
-        final answer =
-            decodedResponse['candidates'][0]['content']['parts'][0]['text'];
-        return answer;
+        final decoded = json.decode(response.body);
+        return decoded['candidates'][0]['content']['parts'][0]['text'];
       } else {
         return 'no';
       }
-    } catch (e) {
+    } catch (_) {
       return 'no';
     }
   }
@@ -126,10 +114,9 @@ class CombinedService {
   }
 
   Future<String> detectLanguage(String text) async {
-    // Conceptual Code. Replace with your language detection logic.
     try {
       final response = await http.post(
-        Uri.parse(gemini), // Using the gemini variable from secrets.dart
+        Uri.parse(gemini),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'contents': [
@@ -141,15 +128,14 @@ class CombinedService {
           ]
         }),
       );
+
       if (response.statusCode == 200) {
-        final decodedResponse = json.decode(response.body);
-        final language =
-            decodedResponse['candidates'][0]['content']['parts'][0]['text'];
-        return language;
+        final decoded = json.decode(response.body);
+        return decoded['candidates'][0]['content']['parts'][0]['text'];
       } else {
         return 'en';
       }
-    } catch (e) {
+    } catch (_) {
       return 'en';
     }
   }
