@@ -46,8 +46,8 @@
     * Add your Gemini and Hugging Face API keys to the `secrets.dart` file:
 
         ```dart
-          static const String geminiApiKey = 'YOUR_GEMINI_API_KEY';
-          static const String huggingFaceApiKey = 'YOUR_HUGGING_FACE_API_KEY';
+          const String gemini = 'YOUR_GEMINI_API_KEY';
+          const String hugFace = 'YOUR_HUGGING_FACE_API_KEY';
         ```
 
     * Replace `YOUR_GEMINI_API_KEY` and `YOUR_HUGGING_FACE_API_KEY` with your actual API keys.
